@@ -23,4 +23,4 @@
 
 /shipvisitharbor/#Text/#Text ShipVisitHarborR POST 
 
--- /getallharborships HarborShipsR GET  
+/shipsatharbor/#Text ShipsAtHarborR GET 
