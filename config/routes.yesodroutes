@@ -23,4 +23,6 @@
 
 /shipvisitharbor/#Text/#Text ShipVisitHarborR POST 
 
+/shipleavesharbor/#Text/#Text ShipLeavesHarborR POST
+
 /shipsatharbor/#Text ShipsAtHarborR GET 

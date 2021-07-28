@@ -28,10 +28,11 @@ Ship json
     name Text 
     nationality Text
 
-HarborShip json 
+Docking json 
     harborId HarborId
     shipId ShipId 
-    UniqueHarborShip harborId shipId
+    UniqueDocking harborId shipId
+    -- todo add a timestamp 
     deriving Eq 
     deriving Show
 
