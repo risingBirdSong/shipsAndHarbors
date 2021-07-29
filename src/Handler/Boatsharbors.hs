@@ -34,6 +34,25 @@ postNewHarborR = do
     _ <- runDB $ insert harbor
     sendResponseStatus status201 ("CREATED HARBOR" :: String)
 
+-- delete all is for development
+deleteAllHarborsR :: Handler Value
+deleteAllHarborsR = do 
+    _ <- runDB $ deleteWhere ([] :: [Filter Harbor])
+    sendResponseStatus status201 ("DELETED ALL HARBORS" :: String)
+
+
+
+deleteShipR :: Text -> Handler Value
+deleteShipR name = do
+    meShip <- runDB $ selectFirst [ShipName ==. name] []
+    case meShip of
+        Nothing -> sendResponseStatus status201 ("Ship not found, not deleted" :: String) 
+        Just (Entity sid ship) -> (runDB $ deleteCascade sid) >>= \ _ -> sendResponseStatus status201 ("DELETED" :: String)
+    
+deleteAllShipsR :: Handler Value
+deleteAllShipsR = do
+    _ <- runDB $ deleteWhere ([] :: [Filter Ship])
+    sendResponseStatus status201 ("DELETED ALL SHIPS" :: String)
 
 postShipVisitHarborR :: Text -> Text -> Handler Value 
 postShipVisitHarborR shipname harborname = do 

@@ -13,11 +13,13 @@
 
 /profile ProfileR GET
 
-/allships AllShipsR GET
+/ship/#Text ShipR DELETE
+
+/allships AllShipsR GET DELETE
 
 /newship NewShipR POST 
 
-/allharbors AllHarborsR GET 
+/allharbors AllHarborsR GET DELETE
 
 /newharbor NewHarborR POST 
 
@@ -26,3 +28,5 @@
 /shipleavesharbor/#Text/#Text ShipLeavesHarborR POST
 
 /shipsatharbor/#Text ShipsAtHarborR GET 
+
+-- /deleteallharbors AllHarborsR DELETE 

@@ -17,10 +17,16 @@ Comment json -- Adding "json" causes ToJSON and FromJSON instances to be derived
     deriving Eq
     deriving Show
 
+Coords json
+    x Int 
+    y Int 
+    deriving Eq
+    deriving Show 
 
 Harbor json
     name Text
     city Text
+    -- coords Coords
     deriving Eq
     deriving Show
 
