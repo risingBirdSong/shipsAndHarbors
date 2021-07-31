@@ -4,6 +4,9 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DerivingStrategies #-}
+
 
 module Handler.Boatsharbors where
 
@@ -12,10 +15,20 @@ import Import
 import Database.Esqueleto hiding (on, from, (==.), Value, delete)
 import qualified Database.Esqueleto.Experimental as E
 
+import qualified Data.Aeson as J
+
+
+newtype GetAllShips = GetAllShips {ships :: [Entity Ship]}
+    deriving (Generic)
+
+instance FromJSON GetAllShips
+instance ToJSON GetAllShips
+
 getAllShipsR :: Handler Value
 getAllShipsR = do
-   ships :: [Entity Ship] <- runDB $ selectList [] []
-   returnJson $ object $ [(pack "ships") .= ships ]
+   theships <- runDB $ selectList [] []
+   returnJson $ GetAllShips {ships = theships} 
+
 
 postNewShipR :: Handler Value
 postNewShipR = do 
@@ -23,10 +36,16 @@ postNewShipR = do
     _ <- runDB $ insert ship
     sendResponseStatus status201 ("CREATED SHIP" :: String)
 
+data GetAllHarbors = GetAllHarbors {harbors :: [Entity Harbor]}
+    deriving Generic
+
+instance FromJSON GetAllHarbors
+instance ToJSON GetAllHarbors
+
 getAllHarborsR :: Handler Value 
 getAllHarborsR = do 
-   harbors :: [Entity Harbor] <- runDB $ selectList [] []
-   returnJson $ object $ [(pack "harbors") .= harbors]
+   harbors<- runDB $ selectList [] []
+   returnJson $ GetAllHarbors {harbors = harbors}
 
 postNewHarborR :: Handler Value
 postNewHarborR = do
@@ -47,7 +66,7 @@ deleteShipR name = do
     meShip <- runDB $ selectFirst [ShipName ==. name] []
     case meShip of
         Nothing -> sendResponseStatus status201 ("Ship not found, not deleted" :: String) 
-        Just (Entity sid ship) -> (runDB $ deleteCascade sid) >>= \ _ -> sendResponseStatus status201 ("DELETED" :: String)
+        Just (Entity sid ship) -> (runDB $ deleteCascade sid) >> sendResponseStatus status201 ("DELETED" :: String)
     
 deleteAllShipsR :: Handler Value
 deleteAllShipsR = do
