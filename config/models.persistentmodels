@@ -43,3 +43,6 @@ Docking json
     deriving Show
 
  
+Gettest json
+    name Text
+    UniqueGetter name

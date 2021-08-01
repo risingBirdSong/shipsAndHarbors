@@ -6,6 +6,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DerivingStrategies #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE RankNTypes #-}
 
 
 module Handler.Boatsharbors where
@@ -14,20 +16,21 @@ module Handler.Boatsharbors where
 import Import
 import Database.Esqueleto hiding (on, from, (==.), Value, delete)
 import qualified Database.Esqueleto.Experimental as E
+import Handler.BoatsharborsEsqeuleto (shipsAtHarborDB)
 
 import qualified Data.Aeson as J
 
 
-newtype GetAllShips = GetAllShips {ships :: [Entity Ship]}
+newtype Ships = Ships {ships :: [Entity Ship]}
     deriving (Generic)
 
-instance FromJSON GetAllShips
-instance ToJSON GetAllShips
+instance FromJSON Ships
+instance ToJSON Ships
 
 getAllShipsR :: Handler Value
 getAllShipsR = do
    theships <- runDB $ selectList [] []
-   returnJson $ GetAllShips {ships = theships} 
+   returnJson $ Ships {ships = theships} 
 
 
 postNewShipR :: Handler Value
@@ -58,8 +61,6 @@ deleteAllHarborsR :: Handler Value
 deleteAllHarborsR = do 
     _ <- runDB $ deleteWhere ([] :: [Filter Harbor])
     sendResponseStatus status201 ("DELETED ALL HARBORS" :: String)
-
-
 
 deleteShipR :: Text -> Handler Value
 deleteShipR name = do
@@ -96,21 +97,9 @@ postShipLeavesHarborR shipname harborname = do
                     sendResponseStatus status201 ((shipName ship ) <> " has left the harbor " <> (harborName harbor) :: Text) 
                 Nothing -> sendResponseStatus status201 ("That ship was not at the harbor" :: String)   
         _ -> sendResponseStatus status201 ("Either the ship or the harbor was not found" :: String) 
-
+    
 
 getShipsAtHarborR :: Text -> Handler Value 
 getShipsAtHarborR harborname = do 
-    ships <- runDB $ select $ do 
-        (ships E.:& docking E.:& harbors) <- 
-            E.from $ E.Table @Ship
-            `E.InnerJoin` E.Table @Docking
-            `E.on` (\(ship E.:& docking) -> 
-                ship ^. ShipId E.==. docking ^. DockingShipId)
-            `E.InnerJoin` E.Table @Harbor
-            `E.on` (\ (_ E.:& docking E.:& harbor) -> 
-                docking ^. DockingHarborId E.==. harbor ^. HarborId
-                )
-        where_ (harbors ^. HarborName E.==. val harborname)
-        pure (ships)
-    returnJson $ object $ [(pack "ships") .= ships]
-
+    shipsatharbor <- runDB $ shipsAtHarborDB harborname
+    returnJson $ Ships {ships = shipsatharbor} 
