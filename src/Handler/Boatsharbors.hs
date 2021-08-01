@@ -27,11 +27,16 @@ newtype Ships = Ships {ships :: [Entity Ship]}
 instance FromJSON Ships
 instance ToJSON Ships
 
+newtype AShip = AShip {ship :: Entity Ship}
+    deriving (Generic)
+
+instance FromJSON AShip
+instance ToJSON AShip 
+
 getAllShipsR :: Handler Value
 getAllShipsR = do
    theships <- runDB $ selectList [] []
    returnJson $ Ships {ships = theships} 
-
 
 postNewShipR :: Handler Value
 postNewShipR = do 
@@ -44,6 +49,11 @@ data GetAllHarbors = GetAllHarbors {harbors :: [Entity Harbor]}
 
 instance FromJSON GetAllHarbors
 instance ToJSON GetAllHarbors
+
+getAShipR :: Text -> Handler Value
+getAShipR name = do 
+    gotten <- runDB $ getBy404 $ UniqueShip name 
+    returnJson $ AShip {ship = gotten}
 
 getAllHarborsR :: Handler Value 
 getAllHarborsR = do 

@@ -31,7 +31,8 @@ Harbor json
     deriving Show
 
 Ship json
-    name Text 
+    name Text
+    UniqueShip name 
     nationality Text
 
 Docking json 
@@ -41,8 +42,3 @@ Docking json
     -- todo add a timestamp 
     deriving Eq 
     deriving Show
-
- 
-Gettest json
-    name Text
-    UniqueGetter name

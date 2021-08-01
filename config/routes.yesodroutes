@@ -28,5 +28,6 @@
 /shipleavesharbor/#Text/#Text ShipLeavesHarborR POST
 
 /shipsatharbor/#Text ShipsAtHarborR GET 
+/getaship/#Text AShipR GET 
 
 -- /deleteallharbors AllHarborsR DELETE 
