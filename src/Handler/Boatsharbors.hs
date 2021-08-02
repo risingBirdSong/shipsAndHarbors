@@ -79,7 +79,7 @@ postNewHarborR = do
     harbor :: Harbor <- requireCheckJsonBody
     -- harbor <- requireCheckJsonBody :: Handler Harbor
     _ <- runDB $ insert harbor
-    sendResponseStatus status201 ("Created Thing" :: Text)
+    sendResponseStatus status201 ("CREATED SHIP" :: Text)
 
 -- delete all is for development
 deleteAllHarborsR :: Handler Value
@@ -101,7 +101,7 @@ postShipVisitHarborR :: ShipNameText -> HarborNameText -> Handler Value
 postShipVisitHarborR shipname harborname = do 
     (ship, harbor) <- shipAndHarborGet shipname harborname
     _ <- runDB $ insert $ Docking (entityKey harbor) (entityKey ship)
-    sendResponseStatus status201 ("The ship " <> "has arrived in the Harbor " :: Text)
+    sendResponseStatus status201 ("The ship " <> (shipName $ entityVal ship)  <> "has arrived in the Harbor " <> (harborName $ entityVal harbor) :: Text)
 
 postShipLeavesHarborR :: ShipNameText -> HarborNameText -> Handler ()
 postShipLeavesHarborR shipname harborname = do
