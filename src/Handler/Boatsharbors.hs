@@ -60,7 +60,6 @@ instance FromJSON AHarbor
 
 getAShipR :: ShipNameText -> Handler Value
 getAShipR name = do
-    -- myTODO getBy404 is sending back a ton of HTML, i'd rather have just a nice and simple json response. so make my own version of getBy404
     gotten <- runDB $ getBy404 $ UniqueShip name 
     returnJson $ AShip {ship = gotten}
 
@@ -91,7 +90,6 @@ deleteAllHarborsR = do
 deleteShipR :: ShipNameText -> Handler Value
 deleteShipR name = do
     (Entity sid ship) :: Entity Ship <- runDB $ getBy404OrErr (UniqueShip name)  ("That Ship was not found, nothing deleted" :: Text)          
-    print "hitting"
     runDB $ deleteCascade sid >> sendResponseStatus status201 ("DELETED" :: Text)
     
 deleteAllShipsR :: Handler Value

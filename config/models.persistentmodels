@@ -24,7 +24,6 @@ Coords json
     deriving Show 
 
 Harbor json
-    -- myTODO use unique
     name Text
     city Text
     UniqueHarbor name
