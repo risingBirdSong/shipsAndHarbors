@@ -24,10 +24,10 @@ Coords json
     deriving Show 
 
 Harbor json
-    -- myTODO use unique
     name Text
     city Text
     UniqueHarbor name
+    -- inefficient query 
     -- myTODO coords Coords
     -- myTODO make a ship capacity and don't allow ships to dock if it's full
     deriving Eq
@@ -47,11 +47,22 @@ Ship json
 
 Docking json 
     harborId HarborId
-    shipId ShipId 
+    shipId ShipId
+    UniqueOnlyOneShipInDocking shipId
     UniqueDocking harborId shipId
     -- myTODO add a timestamp 
     deriving Eq 
     deriving Show
+
+-- Docking json 
+--     harborId HarborId
+--     shipId ShipId 
+--     UniqueDocking harborId shipId
+--     -- todo add a timestamp 
+--     -- myTODO add a timestamp 
+--     deriving Eq 
+--     deriving Show
+
 
 -- myTODO make a DockingHistory table , for keeping track of the history of all dockings. For example in Docking, when a ship leaves, it's gone from the table permanently. Which is good, to emulate it literally leaving the Harbor.
 -- But DockingHistory could keep track of all historical dockings with timestamps for querying 

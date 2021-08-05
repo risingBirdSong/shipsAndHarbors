@@ -2,6 +2,8 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE RankNTypes #-} -- myTODO what exactly is this pragma doing? Error below \/
+{-# LANGUAGE FlexibleContexts #-}
+
 
 -- • Illegal polymorphic type:
 --         forall (m :: * -> *).
@@ -15,7 +17,7 @@
 --    |                    ^^^^^^^^^^^^^^^^^^^^^^^^
 
 
-module Handler.BoatsharborsEsqeuleto (shipsAtHarborDB) where 
+module Handler.ShipsHarbors.BoatsharborsEsqeuleto (shipsAtHarborDB, rendered) where 
 
 import Database.Esqueleto hiding (on, from, (==.), Value, delete)
 import Database.Esqueleto.Experimental
@@ -36,3 +38,19 @@ shipsAtHarborDB harborname = do
         where_ (harbors ^. HarborName ==. val harborname)
         pure (ships)
     pure ships
+
+-- rendered :: Text -> ()
+rendered harborname = do
+    ships <- renderQuerySelect $ do 
+        (ships :& docking :& harbors) <- 
+            from $ Table @Ship
+            `InnerJoin` Table @Docking
+            `on` (\(ship :& docking) -> 
+                ship ^. ShipId ==. docking ^. DockingShipId)
+            `InnerJoin` Table @Harbor
+            `on` (\ (_ :& docking :& harbor) -> 
+                docking ^. DockingHarborId ==. harbor ^. HarborId
+                )
+        where_ (harbors ^. HarborName ==. val harborname)
+        pure (ships)
+    return ships

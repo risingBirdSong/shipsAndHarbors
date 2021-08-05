@@ -13,21 +13,23 @@
 
 /profile ProfileR GET
 
-/ship/#Text ShipR DELETE
+-- ships 
+-- myTODO make the Text a maybe as it's not really needed in post
+/ship/#Text ShipR DELETE GET POST 
+/ships AllShipsR GET DELETE
 
-/allships AllShipsR GET DELETE
+-- harbors
+/harbors HarborsR GET DELETE POST 
+-- myTODO make Handler that will allow to GET and DELETE a single Harbor
 
-/newship NewShipR POST 
+-- ships and harbors
 
-/allharbors AllHarborsR GET DELETE
+/ship-visit-harbor/#Text/#Text ShipVisitHarborR POST 
 
-/newharbor NewHarborR POST 
+/ship-leaves-harbor/#Text/#Text ShipLeavesHarborR POST
 
-/shipvisitharbor/#Text/#Text ShipVisitHarborR POST 
+/ships-at-harbor/#Text ShipsAtHarborR GET 
 
-/shipleavesharbor/#Text/#Text ShipLeavesHarborR POST
-
-/shipsatharbor/#Text ShipsAtHarborR GET 
-/getaship/#Text AShipR GET 
-
--- /deleteallharbors AllHarborsR DELETE 
+-- experimenting stuff
+/query QuerysqlR GET
+/maybetest/#Maybe-Text MaybetestR POST
